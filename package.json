@@ -1,0 +1,24 @@
+{
+    "name": "ecdc",
+    "description": "Embedded (bare metal) C library for creating debug consoles",
+    "repo": "bradschl/embedded-c-debug-console",
+    "license": "MIT",
+    "version": "0.0.1",
+    "src": [
+        "src/ecdc/ecdc.c",
+        "src/ecdc/ecdc.h"
+    ],
+    "dependencies": {
+        "clibs/strdup": "*"
+    },
+    "development": {
+        "stephenmathieson/desribe.h": "*"
+    },
+    "keywords": [
+        "console",
+        "terminal",
+        "c",
+        "embedded",
+        "debug"
+  ],
+}
