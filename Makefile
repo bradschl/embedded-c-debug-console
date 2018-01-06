@@ -47,7 +47,7 @@ $(call BEGIN_UNIVERSAL_BUILD)
 
   $(call ADD_C_INCLUDE,         src)
   $(call BUILD_SOURCE,          $(ecdc_SRC))
-  $(call MAKE_LIRARY,           ecdc)
+  $(call MAKE_LIBRARY,          ecdc)
 
   $(call EXPORT_SHALLOW_DEPS,   ecdc)
 
@@ -60,7 +60,7 @@ deps_SRC        := $(call FIND_SOURCE_IN_DIR, deps)
 $(call BEGIN_UNIVERSAL_BUILD)
   $(call ADD_C_INCLUDE,         deps)
   $(call BUILD_SOURCE,          $(deps_SRC))
-  $(call MAKE_LIRARY,           deps)
+  $(call MAKE_LIBRARY,          deps)
 
   $(call EXPORT_SHALLOW_DEPS,   deps)
 $(call END_UNIVERSAL_BUILD)
