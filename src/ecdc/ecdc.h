@@ -229,7 +229,9 @@ ecdc_alloc_list_command(struct ecdc_console * console,
  *         is returned on failure.
  * 
  */
-char const *ecdc_replace_prompt(struct ecdc_console *console, char const *prompt);
+char const *
+ecdc_replace_prompt(struct ecdc_console *console, 
+                    char const *prompt);
 
 /**
  * @brief Deallocated previously allocated prompt
@@ -238,7 +240,8 @@ char const *ecdc_replace_prompt(struct ecdc_console *console, char const *prompt
  * 
  * @param   ecdc_console Console for which to deallocate prompt
  */
-void ecdc_free_prompt(struct ecdc_console *console);
+void 
+ecdc_free_prompt(struct ecdc_console *console);
 
 // --------------------------------------------------------------------- Extras
 

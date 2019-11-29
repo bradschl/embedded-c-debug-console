@@ -836,7 +836,9 @@ ecdc_alloc_list_command(struct ecdc_console * console,
 }
 
 
-char const * ecdc_replace_prompt(struct ecdc_console *console, char const *prompt)
+char const * 
+ecdc_replace_prompt(struct ecdc_console *console, 
+                    char const *prompt)
 {
     if ((NULL == console) || (NULL == prompt))
     {
@@ -851,7 +853,8 @@ char const * ecdc_replace_prompt(struct ecdc_console *console, char const *promp
     return console->prompt;
 }
 
-void ecdc_free_prompt(struct ecdc_console *console)
+void 
+ecdc_free_prompt(struct ecdc_console *console)
 {
     free(console->prompt);
     console->prompt = NULL;
