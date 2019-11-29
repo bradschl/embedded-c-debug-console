@@ -146,6 +146,32 @@ ecdc_configure_console(struct ecdc_console * console,
                        enum ecdc_mode mode,
                        int flags);
 
+/**
+ * @brief Replaces prompt
+ * @details This command will set the prompt or replaces it if previously set by user
+ * 
+ * @param ecdc_console Console to set prompt on
+ * @param prompt Pointer to C-string containing the desired prompt
+ * 
+ * @return Pointer to newly allocated prompt string.  It is the responsibility
+ *         of the user to deallocate this with the ecdc_free_prompt fucnction.  NULL
+ *         is returned on failure.
+ * 
+ */
+char const *
+ecdc_replace_prompt(struct ecdc_console *console, 
+                    char const *prompt);
+
+/**
+ * @brief Deallocated previously allocated prompt
+ * @details This will deallocate any resources allocated by the ecdc_set_prompt command
+ *          and resets prompt to default.
+ * 
+ * @param   ecdc_console Console for which to deallocate prompt
+ */
+void 
+ecdc_free_prompt(struct ecdc_console *console);
+
 
 // ------------------------------------------ Command allocation / deallocation
 
@@ -216,32 +242,6 @@ ecdc_free_command(struct ecdc_command * command);
 struct ecdc_command *
 ecdc_alloc_list_command(struct ecdc_console * console,
                         const char * command_name);
-
-/**
- * @brief Replaces prompt
- * @details This command will set the prompt or replaces it if previously set by user
- * 
- * @param ecdc_console Console to set prompt on
- * @param prompt Pointer to C-string containing the desired prompt
- * 
- * @return Pointer to newly allocated prompt string.  It is the responsibility
- *         of the user to deallocate this with the ecdc_free_prompt fucnction.  NULL
- *         is returned on failure.
- * 
- */
-char const *
-ecdc_replace_prompt(struct ecdc_console *console, 
-                    char const *prompt);
-
-/**
- * @brief Deallocated previously allocated prompt
- * @details This will deallocate any resources allocated by the ecdc_set_prompt command
- *          and resets prompt to default.
- * 
- * @param   ecdc_console Console for which to deallocate prompt
- */
-void 
-ecdc_free_prompt(struct ecdc_console *console);
 
 // --------------------------------------------------------------------- Extras
 
