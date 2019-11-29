@@ -35,7 +35,7 @@
 // in a standard, but we can assume that we won't have to process any of the
 // really complex ones. That is mostly the terminals problem
 #define CS_BUFFER_SIZE                  16
-
+#define DEFAULT_PROMPT                  " # "
 
 // -------------------------------------------------------------- Private types
 
@@ -94,8 +94,10 @@ struct ecdc_console {
     // Flags and settings
     bool                                f_local_echo;
     enum ecdc_mode                      mode;
-};
 
+    // Prompt
+    char  *                             prompt;
+};
 
 // ---------------------------------------------------------- Private functions
 
@@ -612,8 +614,15 @@ state_start_new_command(struct ecdc_console * console)
     }
 
     // Set new state to read user input
-    // TODO: Make the prompt configurable
-    term_puts(console, " # ");
+    if (NULL == console->prompt)
+    {
+        term_puts(console, DEFAULT_PROMPT);
+    }
+    else
+    {
+        term_puts(console, console->prompt);
+    }
+
     console->state = state_read_input;
 }
 
@@ -671,6 +680,7 @@ ecdc_alloc_console(void * console_hint,
     console->hint = console_hint;
     console->snoop_char = ECDC_GETC_EOF;
     console->state = state_wait_for_client;
+    console->prompt     = NULL;
 
     if(max_arg_line_length < 16) {
         max_arg_line_length = 16;
@@ -737,6 +747,7 @@ ecdc_free_console(struct ecdc_console * console)
 
         free(console->argv);
         free(console->arg_line);
+        free(console->prompt);
         free(console);
     }
 }
@@ -825,6 +836,29 @@ ecdc_alloc_list_command(struct ecdc_console * console,
 }
 
 
+char const * 
+ecdc_replace_prompt(struct ecdc_console *console, 
+                    char const *prompt)
+{
+    if ((NULL == console) || (NULL == prompt))
+    {
+        return NULL;
+    }
+
+    // If the prompt was previously not set, it will be NULL which will not
+    // have any ill side effects when calling free
+    free(console->prompt);
+
+    console->prompt = strdup(prompt);
+    return console->prompt;
+}
+
+void 
+ecdc_free_prompt(struct ecdc_console *console)
+{
+    free(console->prompt);
+    console->prompt = NULL;
+}
 
 void
 ecdc_putc(struct ecdc_console * console, char c)
