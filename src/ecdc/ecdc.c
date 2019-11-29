@@ -747,6 +747,7 @@ ecdc_free_console(struct ecdc_console * console)
 
         free(console->argv);
         free(console->arg_line);
+        free(console->prompt);
         free(console);
     }
 }
