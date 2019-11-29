@@ -3,7 +3,7 @@
     "description": "Embedded (bare metal) C library for creating debug consoles",
     "repo": "bradschl/embedded-c-debug-console",
     "license": "MIT",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "src": [
         "src/ecdc/ecdc.c",
         "src/ecdc/ecdc.h"
