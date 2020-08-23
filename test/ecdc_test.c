@@ -34,11 +34,21 @@ console_getc(void * console_hint)
 }
 
 static void
-console_putc(void * console_hint, char c)
+console_puts(void * console_hint, const char * s, size_t len)
 {
+    if(0 == len) {
+        fprintf(stdout, "WARNING: puts of 0 len\n");
+    }
+
+    fprintf(stdout, "PUTS:");
+    size_t idx;
+    for(idx = 0; idx < len; ++idx) {
+        fprintf(stdout, " 0x%02X", (int) s[idx]);
+    }
+    fprintf(stdout, "\n");
+
     int * fd = (int *) console_hint;
-    fprintf(stdout, "PUTC: 0x%02X\n", (int) c);
-    write(*fd, &c, 1);
+    write(*fd, s, len);
 }
 
 
@@ -54,7 +64,7 @@ exit_cmd(void * hint, int argc, char const * argv[])
 
 
 static void
-delay_us(long us) 
+delay_us(long us)
 {
     struct timespec req;
     req.tv_sec = 0;
@@ -85,14 +95,14 @@ main(int argc, char const *argv[])
     }
 
     if(0 != unlockpt(pt)) {
-        fprintf(stderr, "Failed to unlock terminal (unlockpt)\n");   
+        fprintf(stderr, "Failed to unlock terminal (unlockpt)\n");
         return errno;
     }
 
     char * pt_name = ptsname(pt);
     if(NULL == pt_name) {
-        fprintf(stderr, "Failed to get pts name (ptsname)\n");   
-        return errno;   
+        fprintf(stderr, "Failed to get pts name (ptsname)\n");
+        return errno;
     } else {
         fprintf(stdout, "Opened PTS %s\n", pt_name);
         fprintf(stdout, " - Run \"screen %s\" to connect\n", pt_name);
@@ -102,14 +112,14 @@ main(int argc, char const *argv[])
 
     // Create and configure the console
     struct ecdc_console * console =
-        ecdc_alloc_console(&pt, console_getc, console_putc, 100, 10);
+        ecdc_alloc_console(&pt, console_getc, console_puts, 100, 10);
 
     ecdc_configure_console(console, ECDC_MODE_ANSI, ECDC_SET_LOCAL_ECHO);
 
 
     // Create a few test commands
     bool is_running = true;
-    struct ecdc_command * test_cmd = 
+    struct ecdc_command * test_cmd =
         ecdc_alloc_command(&is_running, console, "exit", exit_cmd);
 
     struct ecdc_command * list_command = ecdc_alloc_list_command(console, "ls");

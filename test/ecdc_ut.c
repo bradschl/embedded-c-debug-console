@@ -26,7 +26,6 @@
 #include "ecdc/ecdc.h"
 
 #include "describe/describe.h"
-#include "strdup/strdup.h"
 
 
 struct simple_buf {
@@ -79,13 +78,18 @@ free_simple_buf(struct simple_buf * buf)
 
 
 static void
-mock_putc(void * hint, char c)
+mock_puts(void * hint, const char * c, size_t len)
 {
     if(NULL != hint) {
         struct simple_buf * buf = (struct simple_buf *) hint;
-        if(buf->write_index < buf->write_data_size) {
-            buf->write_data[buf->write_index] = c;
-            ++buf->write_index;
+        size_t idx;
+        for(idx = 0; idx < len; ++idx) {
+            if(buf->write_index < buf->write_data_size) {
+                buf->write_data[buf->write_index] = c[idx];
+                ++buf->write_index;
+            } else {
+                break;
+            }
         }
     }
 }
@@ -126,7 +130,7 @@ test_alloc_1(void)
         struct ecdc_console * console = NULL;
 
         it("can allocate a console") {
-            console = ecdc_alloc_console(NULL, mock_getc, mock_putc, 80, 6);
+            console = ecdc_alloc_console(NULL, mock_getc, mock_puts, 80, 6);
             assert_not_null(console);
         }
 
@@ -156,7 +160,7 @@ test_alloc_2(void)
         struct ecdc_console * console = NULL;
 
         it("can allocate a console") {
-            console = ecdc_alloc_console(NULL, mock_getc, mock_putc, 80, 6);
+            console = ecdc_alloc_console(NULL, mock_getc, mock_puts, 80, 6);
             assert_not_null(console);
         }
 
@@ -187,7 +191,7 @@ test_link_1(void)
         struct ecdc_console * console = NULL;
 
         it("can allocate a console") {
-            console = ecdc_alloc_console(NULL, mock_getc, mock_putc, 80, 6);
+            console = ecdc_alloc_console(NULL, mock_getc, mock_puts, 80, 6);
             assert_not_null(console);
         }
 
@@ -228,7 +232,7 @@ test_link_2(void)
         struct ecdc_console * console = NULL;
 
         it("can allocate a console") {
-            console = ecdc_alloc_console(NULL, mock_getc, mock_putc, 80, 6);
+            console = ecdc_alloc_console(NULL, mock_getc, mock_puts, 80, 6);
             assert_not_null(console);
         }
 
@@ -293,7 +297,7 @@ test_parse_1(void)
 
         struct ecdc_console * console = NULL;
         it("can allocate a console") {
-            console = ecdc_alloc_console(read_buffer, mock_getc, mock_putc, 80, 6);
+            console = ecdc_alloc_console(read_buffer, mock_getc, mock_puts, 80, 6);
             assert_not_null(console);
         }
 
@@ -382,7 +386,7 @@ test_parse_2(void)
 
         struct ecdc_console * console = NULL;
         it("can allocate a console") {
-            console = ecdc_alloc_console(read_buffer, mock_getc, mock_putc, 80, 6);
+            console = ecdc_alloc_console(read_buffer, mock_getc, mock_puts, 80, 6);
             assert_not_null(console);
         }
 
@@ -483,7 +487,7 @@ test_prompt_write(void)
 
         struct ecdc_console * console = NULL;
         it("can allocate a console") {
-            console = ecdc_alloc_console(buf, mock_getc, mock_putc, 80, 6);
+            console = ecdc_alloc_console(buf, mock_getc, mock_puts, 80, 6);
             assert_not_null(console);
         }
 
@@ -539,6 +543,10 @@ test_prompt_write(void)
 
         it("can free a console") {
             ecdc_free_console(console);
+        }
+
+        it("can free a command") {
+            ecdc_free_command(cmd_1);
         }
 
         free_simple_buf(buf);

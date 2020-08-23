@@ -75,9 +75,10 @@ typedef int (*ecdc_getc_fn)(void * console_hint);
  * @param console_hint Optional console hint parameter. This pointer may be
  *          used for whatever the implementation wants (such as a this pointer,
  *          or a buffer pointer)
- * @param c Character to write to the output console
+ * @param s Character string to write to the output console
+ * @param len Length of the character stream
  */
-typedef void (*ecdc_putc_fn)(void * console_hint, char c);
+typedef void (*ecdc_puts_fn)(void * console_hint, const char * s, size_t len);
 
 
 /**
@@ -86,12 +87,12 @@ typedef void (*ecdc_putc_fn)(void * console_hint, char c);
  *          registered commands.
  *          The default settings are ECDC_MODE_ANSI with local echo enabled
  *
- * @param console_hint Optional console hint parameter. The getc_fn and putc_fn
+ * @param console_hint Optional console hint parameter. The getc_fn and puts_fn
  *          functions will be called with this pointer. This pointer may be
  *          used for whatever the implementation wants (such as a this pointer,
  *          or a buffer pointer). Set to NULL if not used
  * @param getc_fn Character read function
- * @param putc_fn Character write function
+ * @param puts_fn Character string write function
  * @param max_arg_line_length Maximum length of an input line. This is the
  *          maximum size of the input line and its arguments. 80 characters is
  *          a sane default.
@@ -105,7 +106,7 @@ typedef void (*ecdc_putc_fn)(void * console_hint, char c);
 struct ecdc_console *
 ecdc_alloc_console(void * console_hint,
                    ecdc_getc_fn getc_fn,
-                   ecdc_putc_fn putc_fn,
+                   ecdc_puts_fn puts_fn,
                    size_t max_arg_line_length,
                    size_t max_arg_count);
 
@@ -147,30 +148,16 @@ ecdc_configure_console(struct ecdc_console * console,
                        int flags);
 
 /**
- * @brief Replaces prompt
- * @details This command will set the prompt or replaces it if previously set by user
- * 
+ * @brief Replaces the command prompt
+ * @details This will set the prompt or replaces it if was previously set
+ *
  * @param ecdc_console Console to set prompt on
- * @param prompt Pointer to C-string containing the desired prompt
- * 
- * @return Pointer to newly allocated prompt string.  It is the responsibility
- *         of the user to deallocate this with the ecdc_free_prompt fucnction.  NULL
- *         is returned on failure.
- * 
+ * @param prompt Pointer to C-string containing the desired prompt. Set to NULL
+ *        to restore the default prompt
  */
-char const *
-ecdc_replace_prompt(struct ecdc_console *console, 
-                    char const *prompt);
-
-/**
- * @brief Deallocated previously allocated prompt
- * @details This will deallocate any resources allocated by the ecdc_set_prompt command
- *          and resets prompt to default.
- * 
- * @param   ecdc_console Console for which to deallocate prompt
- */
-void 
-ecdc_free_prompt(struct ecdc_console *console);
+void
+ecdc_replace_prompt(struct ecdc_console * console,
+                    char const * prompt);
 
 
 // ------------------------------------------ Command allocation / deallocation

@@ -9,7 +9,6 @@
         "src/ecdc/ecdc.h"
     ],
     "dependencies": {
-        "clibs/strdup": "*"
     },
     "development": {
         "stephenmathieson/desribe.h": "*"

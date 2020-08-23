@@ -12,7 +12,7 @@ command -v clib >/dev/null 2>&1 || {
 
 
 # Install
-DEPS_PACKAGES="clibs/strdup bradschl/metamake stephenmathieson/describe.h"
+DEPS_PACKAGES="bradschl/metamake stephenmathieson/describe.h"
 
 clib install ${DEPS_PACKAGES} -o ${THIS_SCRIPT_DIR}/deps
 if (($? > 0)); then
